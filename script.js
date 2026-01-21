@@ -6,19 +6,19 @@ async function fetchDownload() {
     const resultArea = document.getElementById('resultArea');
     const mainBtn = document.getElementById('mainBtn');
 
-    // Extract ID from the link you tested: tKLcFy1HDUA
+    // Extracts the ID from the URL accurately
     const videoId = videoUrl.includes('youtu.be/') ? 
                     videoUrl.split('youtu.be/')[1].split('?')[0] : 
                     videoUrl.split('v=')[1]?.split('&')[0];
     
     if (!videoId) return alert("Please paste a valid YouTube link.");
 
-    mainBtn.innerText = "Connecting...";
-    resultArea.innerHTML = '<p style="margin-top:20px;">Fetching high-quality links...</p>';
+    mainBtn.innerText = "Generating Link...";
+    resultArea.innerHTML = "";
 
     try {
-        // We call the download endpoint which you just verified
-        const response = await fetch(`https://${API_HOST}/dl?id=${videoId}`, {
+        // This is the correct URL for downloading
+        const response = await fetch(`https://${API_HOST}/dl?id=${videoId}&cgeo=US`, {
             method: 'GET',
             headers: {
                 'x-rapidapi-key': API_KEY,
@@ -29,31 +29,20 @@ async function fetchDownload() {
         const data = await response.json();
 
         if (data.status === 'OK' && data.link) {
-            // Building the result card based on your 'Preview' design
             resultArea.innerHTML = `
-                <div class="download-card" style="background:#161625; padding:25px; border-radius:20px; border:2px solid #6366f1; margin-top:30px; text-align:left;">
-                    <img src="${data.thumbnail[0].url}" style="width:100%; border-radius:12px; margin-bottom:15px;">
-                    <h3 style="color:white; margin-bottom:5px;">${data.title}</h3>
-                    <p style="color:#888; font-size:0.85rem; margin-bottom:20px;">Status: Ready for Download</p>
-                    
-                    <div style="display:grid; gap:10px;">
-                        <a href="${data.link}" target="_blank" class="dl-btn" style="background:#6366f1; color:white; padding:15px; text-decoration:none; border-radius:12px; text-align:center; font-weight:bold; font-size:1.1rem;">
-                            Download MP4 (Video)
-                        </a>
-                    </div>
-                </div>
-            `;
+                <div class="download-card" style="background:#161625; padding:20px; border-radius:15px; border:2px solid #6366f1; margin-top:20px; text-align:left;">
+                    <h4 style="color:white; margin-bottom:10px;">${data.title}</h4>
+                    <a href="${data.link}" target="_blank" class="dl-btn" style="display:block; text-align:center; background:#6366f1; color:white; padding:12px; text-decoration:none; border-radius:10px; font-weight:bold;">
+                        Download MP4 Now
+                    </a>
+                </div>`;
         } else {
-            // Handles the 'undefined' error by showing the actual API message
-            alert("API Note: " + (data.msg || "Ensure you have clicked 'Subscribe' on the Pricing tab for the free plan."));
+            // Displays the specific error from the API if subscription fails
+            alert("API Error: " + (data.msg || "Please check your subscription for the Download endpoint."));
         }
     } catch (error) {
-        alert("Connection failed. Check your RapidAPI subscription.");
+        alert("Connection failed. Check your API key status.");
     } finally {
-        mainBtn.innerText = "Get Video Info →";
+        mainBtn.innerText = "Get Download Links →";
     }
-}
-
-function pasteLink() {
-    navigator.clipboard.readText().then(text => document.getElementById('videoUrl').value = text);
 }
