@@ -17,7 +17,7 @@ async function fetchDownload() {
     resultArea.innerHTML = "Working...";
 
     try {
-        // Using the exact working URL from your manual test
+        // Updated to use the correct '/dl' endpoint with 'cgeo' parameter
         const response = await fetch(`https://${API_HOST}/dl?id=${videoId}&cgeo=US`, {
             method: 'GET',
             headers: {
@@ -30,18 +30,18 @@ async function fetchDownload() {
 
         if (data.status === 'OK' && data.link) {
             resultArea.innerHTML = `
-                <div style="background:#161625; padding:20px; border-radius:15px; border:2px solid #6366f1; margin-top:20px;">
+                <div class="download-card" style="background:#161625; padding:20px; border-radius:15px; border:2px solid #6366f1; margin-top:20px; text-align:left;">
                     <h4 style="color:white; margin-bottom:10px;">${data.title}</h4>
-                    <a href="${data.link}" target="_blank" style="display:block; text-align:center; background:#6366f1; color:white; padding:12px; text-decoration:none; border-radius:10px; font-weight:bold;">
+                    <a href="${data.link}" target="_blank" class="dl-btn" style="display:block; text-align:center; background:#6366f1; color:white; padding:12px; text-decoration:none; border-radius:10px; font-weight:bold;">
                         Download Now
                     </a>
                 </div>`;
         } else {
-            // This will tell us the EXACT error from RapidAPI
-            alert("API Note: " + (data.msg || "Check your subscription on RapidAPI."));
+            // This specifically catches the subscription message
+            alert("API Note: " + (data.msg || "The API key needs a manual test on the dashboard to activate."));
         }
     } catch (error) {
-        alert("Check your internet or API key.");
+        alert("Connection failed. Check your internet or API key.");
     } finally {
         mainBtn.innerText = "Get Download Links →";
     }
