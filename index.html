@@ -1,42 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Video Downloader UI</title>
-  <link rel="stylesheet" href="style.css"/>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fast YT Downloader</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div class="main-container">
+        <header>
+            <h1>⚡ Pro Downloader</h1>
+            <p>Fast, Free & Secure YouTube Downloads</p>
+        </header>
 
-  <main class="container">
-    <h1>Download Videos & Audio<br><span>In Any Quality</span></h1>
-    <p class="subtitle">
-      Paste any video link and download it in your preferred format and quality.
-    </p>
+        <div class="search-box">
+            <input type="text" id="videoUrl" placeholder="Paste YouTube link here (e.g., https://youtube.com/shorts/...)">
+            <button id="downloadBtn" onclick="getInfo()">Fetch Video</button>
+        </div>
 
-    <div class="input-box">
-      <input type="text" id="videoUrl" placeholder="Paste video URL here" />
-      <button onclick="getInfo()">Get Video Info →</button>
+        <div id="result-area" class="result-container">
+            </div>
+
+        <footer>
+            <p>Powered by Cobalt Engine &bull; 2026</p>
+        </footer>
     </div>
-
-    <section class="features">
-      <div class="card">
-        <h3>Multiple Formats</h3>
-        <p>Download as MP4 or MP3</p>
-      </div>
-      <div class="card">
-        <h3>High Quality</h3>
-        <p>Up to 4K resolution</p>
-      </div>
-      <div class="card">
-        <h3>Fast & Easy</h3>
-        <p>Quick downloads, no signup</p>
-      </div>
-    </section>
-
-    <p id="message"></p>
-  </main>
-
-  <script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
