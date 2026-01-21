@@ -1,49 +1,54 @@
-async function getInfo() {
-    const urlInput = document.getElementById('videoUrl');
-    const resultArea = document.getElementById('result-area');
-    const btn = document.getElementById('downloadBtn');
+const API_KEY = 'd4239af42fmsha37d88047ee5b96p12d11cjsnb347fa450a93';
+const API_HOST = 'yt-api.p.rapidapi.com';
+
+function pasteLink() {
+    navigator.clipboard.readText().then(text => {
+        document.getElementById('videoUrl').value = text;
+    });
+}
+
+async function fetchDownload() {
+    const videoUrl = document.getElementById('videoUrl').value;
+    const resultArea = document.getElementById('resultArea');
+    const mainBtn = document.getElementById('mainBtn');
+
+    // Extract ID from URL
+    const videoId = videoUrl.split('v=')[1]?.split('&')[0] || videoUrl.split('/').pop();
     
-    const url = urlInput.value.trim();
+    if (!videoId) return alert("Please enter a valid link");
 
-    if (!url) {
-        alert("Please paste a URL first!");
-        return;
-    }
+    mainBtn.innerText = "Processing...";
+    resultArea.innerHTML = "";
 
-    // Disable button while loading
-    btn.disabled = true;
-    btn.innerText = "Processing...";
-    resultArea.innerHTML = "<p style='color: #94a3b8;'>Connecting to Cobalt Engine...</p>";
+    const url = `https://${API_HOST}/dl?id=${videoId}`;
+    const options = {
+        method: 'GET',
+        headers: {
+            'x-rapidapi-key': API_KEY,
+            'x-rapidapi-host': API_HOST
+        }
+    };
 
     try {
-        const response = await fetch('https://api.cobalt.tools/api/json', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                url: url,
-                videoQuality: '720'
-            })
-        });
-
+        const response = await fetch(url, options);
         const data = await response.json();
 
-        if (data.status === 'stream' || data.status === 'redirect') {
+        if (data.status === 'OK') {
             resultArea.innerHTML = `
                 <div class="download-card">
-                    <h3 style="margin-bottom:10px;">Video Found!</h3>
-                    <p style="font-size: 0.9rem; color: #94a3b8;">Click below to save to your device.</p>
-                    <a href="${data.url}" class="dl-link" target="_blank">⬇️ DOWNLOAD MP4</a>
-                </div>`;
+                    <img src="${data.thumbnail[0].url}" style="width:100%; border-radius:10px; margin-bottom:10px;">
+                    <h4>${data.title}</h4>
+                    <p style="font-size:0.8rem; color:#888;">Format: MP4 (Video)</p>
+                    <a href="${data.link}" target="_blank" class="dl-btn">Download Now</a>
+                </div>
+            `;
         } else {
-            resultArea.innerHTML = `<p style="color: #ef4444;">❌ Error: ${data.text || "Service Busy. Try again."}</p>`;
+            alert("API Error: " + (data.msg || "Could not fetch video"));
         }
     } catch (error) {
-        resultArea.innerHTML = `<p style="color: #ef4444;">❌ Server Error. Please try a different link.</p>`;
+        console.error(error);
+        alert("Failed to connect to API");
     } finally {
-        btn.disabled = false;
-        btn.innerText = "Fetch Video";
+        mainBtn.innerText = "Get Download Links →";
     }
 }
