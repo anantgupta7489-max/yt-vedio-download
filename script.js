@@ -6,18 +6,18 @@ async function fetchDownload() {
     const resultArea = document.getElementById('resultArea');
     const mainBtn = document.getElementById('mainBtn');
 
-    // Extracts the Video ID accurately from the URL
+    // Extract Video ID correctly
     const videoId = videoUrl.includes('youtu.be/') ? 
                     videoUrl.split('youtu.be/')[1].split('?')[0] : 
                     videoUrl.split('v=')[1]?.split('&')[0];
     
     if (!videoId) return alert("Please paste a valid YouTube link.");
 
-    mainBtn.innerText = "Generating Download Link...";
-    resultArea.innerHTML = "";
+    mainBtn.innerText = "Connecting to API...";
+    resultArea.innerHTML = "Working...";
 
     try {
-        // We use '/dl' and include 'cgeo' exactly like your successful test
+        // Using the exact working URL from your manual test
         const response = await fetch(`https://${API_HOST}/dl?id=${videoId}&cgeo=US`, {
             method: 'GET',
             headers: {
@@ -30,22 +30,19 @@ async function fetchDownload() {
 
         if (data.status === 'OK' && data.link) {
             resultArea.innerHTML = `
-                <div class="download-card" style="background:#161625; padding:20px; border-radius:15px; border:2px solid #6366f1; margin-top:20px; text-align:left;">
+                <div style="background:#161625; padding:20px; border-radius:15px; border:2px solid #6366f1; margin-top:20px;">
                     <h4 style="color:white; margin-bottom:10px;">${data.title}</h4>
-                    <p style="color:#888; font-size:0.8rem; margin-bottom:15px;">Duration: ${data.lengthSeconds} seconds</p>
-                    <a href="${data.link}" target="_blank" class="dl-btn" style="display:block; text-align:center; background:#6366f1; color:white; padding:12px; text-decoration:none; border-radius:10px; font-weight:bold;">
-                        Download MP4 Now
+                    <a href="${data.link}" target="_blank" style="display:block; text-align:center; background:#6366f1; color:white; padding:12px; text-decoration:none; border-radius:10px; font-weight:bold;">
+                        Download Now
                     </a>
                 </div>`;
         } else {
-            // Displays the specific error message if the subscription hasn't synced
-            alert("API Note: " + (data.msg || "The Download endpoint is still initializing. Please wait 5 minutes."));
+            // This will tell us the EXACT error from RapidAPI
+            alert("API Note: " + (data.msg || "Check your subscription on RapidAPI."));
         }
     } catch (error) {
-        alert("Connection Error. Please ensure your API key is correct.");
+        alert("Check your internet or API key.");
     } finally {
         mainBtn.innerText = "Get Download Links →";
     }
 }
-
-
