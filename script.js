@@ -1,22 +1,30 @@
 async function getInfo() {
     const urlInput = document.getElementById('videoUrl').value.trim();
-    const messageArea = document.getElementById('message');
+    const resultArea = document.getElementById('message'); // Matches your message ID
 
     if (!urlInput) {
-        messageArea.innerHTML = "Please paste a video URL first!";
+        resultArea.innerHTML = "Please paste a link first!";
         return;
     }
 
-    // Extract Video ID
+    // This section fixes the "Invalid Link" error by finding the Video ID correctly
     let videoId = "";
-    if (urlInput.includes("v=")) {
-        videoId = urlInput.split('v=')[1]?.split('&')[0];
-    } else {
-        videoId = urlInput.split('/').pop();
+    try {
+        if (urlInput.includes("youtu.be/")) {
+            videoId = urlInput.split("youtu.be/")[1].split(/[?#]/)[0];
+        } else if (urlInput.includes("youtube.com/shorts/")) {
+            videoId = urlInput.split("shorts/")[1].split(/[?#]/)[0];
+        } else if (urlInput.includes("v=")) {
+            videoId = urlInput.split("v=")[1].split("&")[0];
+        } else {
+            videoId = urlInput.split("/").pop().split(/[?#]/)[0];
+        }
+    } catch (e) {
+        resultArea.innerHTML = "Could not read this link format.";
+        return;
     }
 
-    messageArea.innerHTML = "Processing... please wait.";
-    messageArea.style.color = "#e5e7eb"; // Change color back to normal from red
+    resultArea.innerHTML = "Searching for video details...";
 
     const options = {
         method: 'GET',
@@ -31,25 +39,24 @@ async function getInfo() {
         const data = await response.json();
 
         if (data.status === "OK") {
-            // Create the UI for download links
-            let html = `<div style="margin-top:20px; text-align:left;">
-                <h3 style="color:#7c7cff">${data.title}</h3>
-                <p>Select Quality:</p>`;
+            // Success: Create download buttons
+            let html = `<div style="margin-top:20px; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px;">
+                <h3 style="color:#7c7cff;">${data.title}</h3>
+                <p>Click a button to download:</p>`;
             
             data.link.forEach(item => {
-                html += `<a href="${item[0]}" target="_blank" style="display:block; background:#6366f1; color:white; padding:10px; margin:5px 0; text-decoration:none; border-radius:8px; text-align:center;">
+                html += `<a href="${item[0]}" target="_blank" style="display:block; background:#6366f1; color:white; padding:10px; margin:8px 0; text-decoration:none; border-radius:8px; font-weight:bold;">
                     Download ${item[1]} (${item[2]})
                 </a>`;
             });
 
             html += `</div>`;
-            messageArea.innerHTML = html;
+            resultArea.innerHTML = html;
         } else {
-            messageArea.innerHTML = "Error: Video not found. Check the link.";
-            messageArea.style.color = "#fca5a5";
+            // This happens if the API doesn't find the video
+            resultArea.innerHTML = "API Error: Video not found or unavailable.";
         }
     } catch (error) {
-        messageArea.innerHTML = "Connection error. Please try again.";
-        messageArea.style.color = "#fca5a5";
+        resultArea.innerHTML = "Connection Error. Check your internet.";
     }
 }
