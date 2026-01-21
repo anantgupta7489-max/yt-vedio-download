@@ -1,14 +1,16 @@
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
-body { background-color: #0b0b15; color: white; display: flex; justify-content: center; padding-top: 50px; min-height: 100vh; }
-.container { width: 90%; max-width: 500px; text-align: center; }
-.badge { display: inline-flex; align-items: center; background: #161625; padding: 8px 15px; border-radius: 20px; font-size: 0.8rem; border: 1px solid #2d2d3f; margin-bottom: 20px; }
-.dot { height: 8px; width: 8px; background: #6366f1; border-radius: 50%; margin-right: 8px; }
-h1 { font-size: 2rem; margin-bottom: 10px; }
-.description { color: #888; margin-bottom: 30px; font-size: 0.9rem; }
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+body { background-color: #0b0b15; color: white; display: flex; justify-content: center; min-height: 100vh; padding: 40px 20px; }
+.container { max-width: 500px; width: 100%; text-align: center; }
+.badge { display: inline-flex; align-items: center; background: #161625; padding: 8px 16px; border-radius: 20px; font-size: 0.85rem; border: 1px solid #2d2d3f; margin-bottom: 20px; }
+.dot { height: 8px; width: 8px; background: #6366f1; border-radius: 50%; margin-right: 10px; }
+h1 { font-size: 2.2rem; line-height: 1.2; font-weight: 800; }
+.highlight { color: #818cf8; margin-bottom: 20px; }
+.description { color: #888; font-size: 1rem; margin-bottom: 30px; }
 .input-wrapper { display: flex; background: #161625; border: 1px solid #2d2d3f; border-radius: 12px; padding: 5px; margin-bottom: 15px; }
 input { flex: 1; background: transparent; border: none; color: white; padding: 12px; outline: none; }
-.paste-btn { background: #2d2d3f; color: white; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; }
-.submit-btn { width: 100%; background: #1e1e2f; color: white; border: 1px solid #3e3e5a; padding: 15px; border-radius: 12px; cursor: pointer; font-weight: bold; }
-.submit-btn:hover { border-color: #6366f1; }
-.download-card { background: #161625; padding: 20px; border-radius: 15px; margin-top: 20px; border: 1px solid #6366f1; }
-.dl-btn { display: inline-block; padding: 10px 20px; background: #6366f1; color: white; text-decoration: none; border-radius: 8px; margin-top: 10px; font-weight: bold; }
+.paste-btn { background: #2d2d3f; color: white; border: none; padding: 8px 18px; border-radius: 8px; cursor: pointer; }
+.submit-btn { width: 100%; background: #2d2d3f; color: white; border: 1px solid #3e3e5a; padding: 16px; border-radius: 12px; cursor: pointer; font-weight: 600; margin-bottom: 30px; }
+.features-grid { display: grid; gap: 15px; }
+.card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); padding: 25px; border-radius: 16px; }
+.download-card { background: #161625; border: 2px solid #6366f1; padding: 20px; border-radius: 15px; margin-bottom: 20px; text-align: left; }
+.dl-btn { display: block; width: 100%; text-align: center; padding: 12px; background: #6366f1; color: white; text-decoration: none; border-radius: 8px; margin-top: 10px; font-weight: bold; }
