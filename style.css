@@ -1,91 +1,14 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-body {
-    background: #0f172a;
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-}
-
-.main-container {
-    width: 100%;
-    max-width: 500px;
-    padding: 20px;
-    text-align: center;
-}
-
-header h1 {
-    font-size: 2.5rem;
-    margin-bottom: 10px;
-    background: linear-gradient(90deg, #6366f1, #a855f7);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-.search-box {
-    margin: 30px 0;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-input {
-    padding: 15px;
-    border-radius: 12px;
-    border: 2px solid #334155;
-    background: #1e293b;
-    color: white;
-    font-size: 1rem;
-    outline: none;
-}
-
-input:focus {
-    border-color: #6366f1;
-}
-
-button {
-    padding: 15px;
-    border-radius: 12px;
-    border: none;
-    background: #6366f1;
-    color: white;
-    font-weight: bold;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: 0.3s;
-}
-
-button:hover {
-    background: #4f46e5;
-    transform: translateY(-2px);
-}
-
-.result-container {
-    margin-top: 20px;
-    min-height: 50px;
-}
-
-.download-card {
-    background: #1e293b;
-    padding: 20px;
-    border-radius: 15px;
-    border: 1px solid #334155;
-}
-
-.dl-link {
-    display: block;
-    background: #10b981;
-    color: white;
-    padding: 12px;
-    margin-top: 15px;
-    text-decoration: none;
-    border-radius: 8px;
-    font-weight: bold;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
+body { background-color: #0b0b15; color: white; display: flex; justify-content: center; padding-top: 50px; min-height: 100vh; }
+.container { width: 90%; max-width: 500px; text-align: center; }
+.badge { display: inline-flex; align-items: center; background: #161625; padding: 8px 15px; border-radius: 20px; font-size: 0.8rem; border: 1px solid #2d2d3f; margin-bottom: 20px; }
+.dot { height: 8px; width: 8px; background: #6366f1; border-radius: 50%; margin-right: 8px; }
+h1 { font-size: 2rem; margin-bottom: 10px; }
+.description { color: #888; margin-bottom: 30px; font-size: 0.9rem; }
+.input-wrapper { display: flex; background: #161625; border: 1px solid #2d2d3f; border-radius: 12px; padding: 5px; margin-bottom: 15px; }
+input { flex: 1; background: transparent; border: none; color: white; padding: 12px; outline: none; }
+.paste-btn { background: #2d2d3f; color: white; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; }
+.submit-btn { width: 100%; background: #1e1e2f; color: white; border: 1px solid #3e3e5a; padding: 15px; border-radius: 12px; cursor: pointer; font-weight: bold; }
+.submit-btn:hover { border-color: #6366f1; }
+.download-card { background: #161625; padding: 20px; border-radius: 15px; margin-top: 20px; border: 1px solid #6366f1; }
+.dl-btn { display: inline-block; padding: 10px 20px; background: #6366f1; color: white; text-decoration: none; border-radius: 8px; margin-top: 10px; font-weight: bold; }
