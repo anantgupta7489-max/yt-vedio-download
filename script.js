@@ -6,18 +6,18 @@ async function fetchDownload() {
     const resultArea = document.getElementById('resultArea');
     const mainBtn = document.getElementById('mainBtn');
 
-    // Extract Video ID correctly
+    // Extracting ID from your YouTube link
     const videoId = videoUrl.includes('youtu.be/') ? 
                     videoUrl.split('youtu.be/')[1].split('?')[0] : 
                     videoUrl.split('v=')[1]?.split('&')[0];
     
     if (!videoId) return alert("Please paste a valid YouTube link.");
 
-    mainBtn.innerText = "Connecting to API...";
+    mainBtn.innerText = "Connecting...";
     resultArea.innerHTML = "Working...";
 
     try {
-        // Updated to use the correct '/dl' endpoint with 'cgeo' parameter
+        // We must use 'dl' and include 'cgeo' to get the download link
         const response = await fetch(`https://${API_HOST}/dl?id=${videoId}&cgeo=US`, {
             method: 'GET',
             headers: {
@@ -30,19 +30,20 @@ async function fetchDownload() {
 
         if (data.status === 'OK' && data.link) {
             resultArea.innerHTML = `
-                <div class="download-card" style="background:#161625; padding:20px; border-radius:15px; border:2px solid #6366f1; margin-top:20px; text-align:left;">
-                    <h4 style="color:white; margin-bottom:10px;">${data.title}</h4>
-                    <a href="${data.link}" target="_blank" class="dl-btn" style="display:block; text-align:center; background:#6366f1; color:white; padding:12px; text-decoration:none; border-radius:10px; font-weight:bold;">
+                <div style="background:#161625; padding:20px; border-radius:15px; border:2px solid #6366f1; margin-top:20px;">
+                    <h4 style="color:white;">${data.title}</h4>
+                    <a href="${data.link}" target="_blank" style="display:block; text-align:center; background:#6366f1; color:white; padding:12px; text-decoration:none; border-radius:10px; font-weight:bold; margin-top:10px;">
                         Download Now
                     </a>
                 </div>`;
         } else {
-            // This specifically catches the subscription message
+            // This message tells you exactly what to do next
             alert("API Note: " + (data.msg || "The API key needs a manual test on the dashboard to activate."));
         }
     } catch (error) {
-        alert("Connection failed. Check your internet or API key.");
+        alert("Check your internet connection.");
     } finally {
         mainBtn.innerText = "Get Download Links →";
     }
 }
+
