@@ -6,7 +6,7 @@ async function fetchDownload() {
     const resultArea = document.getElementById('resultArea');
     const mainBtn = document.getElementById('mainBtn');
 
-    // Extracts the ID from the URL accurately
+    // Extracting ID from the YouTube link
     const videoId = videoUrl.includes('youtu.be/') ? 
                     videoUrl.split('youtu.be/')[1].split('?')[0] : 
                     videoUrl.split('v=')[1]?.split('&')[0];
@@ -17,7 +17,7 @@ async function fetchDownload() {
     resultArea.innerHTML = "";
 
     try {
-        // This is the correct URL for downloading
+        // Using the /dl endpoint with the cgeo parameter verified in your test
         const response = await fetch(`https://${API_HOST}/dl?id=${videoId}&cgeo=US`, {
             method: 'GET',
             headers: {
@@ -28,6 +28,7 @@ async function fetchDownload() {
 
         const data = await response.json();
 
+        // Check if the API returned a valid status and link
         if (data.status === 'OK' && data.link) {
             resultArea.innerHTML = `
                 <div class="download-card" style="background:#161625; padding:20px; border-radius:15px; border:2px solid #6366f1; margin-top:20px; text-align:left;">
@@ -37,12 +38,13 @@ async function fetchDownload() {
                     </a>
                 </div>`;
         } else {
-            // Displays the specific error from the API if subscription fails
-            alert("API Error: " + (data.msg || "Please check your subscription for the Download endpoint."));
+            // This captures the exact message if subscription isn't syncing
+            alert("API Note: " + (data.msg || "Please check your subscription for the Download endpoint on RapidAPI."));
         }
     } catch (error) {
-        alert("Connection failed. Check your API key status.");
+        alert("Connection Error. Your API key might need a manual test on the dashboard.");
     } finally {
         mainBtn.innerText = "Get Download Links →";
     }
 }
+
