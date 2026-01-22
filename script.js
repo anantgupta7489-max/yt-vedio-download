@@ -1,4 +1,5 @@
-const API_KEY = 'YOUR_ACTUAL_RAPIDAPI_KEY_HERE';
+// Your New API Configuration
+const API_KEY = 'd4239af42fmsha37d88047ee5b96p12d11cjsnb347fa450a93';
 const API_HOST = 'social-download-all-in-one.p.rapidapi.com';
 
 async function fetchDownload() {
@@ -8,39 +9,43 @@ async function fetchDownload() {
 
     if (!videoUrl) return alert("Please paste a link first.");
 
-    mainBtn.innerHTML = "WORKING...";
+    // Visual feedback
+    mainBtn.innerHTML = "Processing...";
     resultArea.innerHTML = "";
 
     try {
-        // Using the Social Download All In One endpoint
-        const response = await fetch(`https://${API_HOST}/v1/social/autodownload?url=${encodeURIComponent(videoUrl)}`, {
-            method: 'GET',
+        // This API requires a POST request as shown in your dashboard
+        const response = await fetch(`https://${API_HOST}/v1/social/autodownload`, {
+            method: 'POST',
             headers: {
+                'content-type': 'application/json',
                 'x-rapidapi-key': API_KEY,
                 'x-rapidapi-host': API_HOST
-            }
+            },
+            body: JSON.stringify({
+                url: videoUrl
+            })
         });
 
         const data = await response.json();
-        console.log("API Debug:", data);
+        console.log("API Response:", data);
 
-        // Smart Link Finder: Checks all possible data paths
-        const finalLink = data.url || (data.medias && data.medias[0].url);
-
-        if (finalLink) {
+        // Accessing the link from the "url" key seen in your test
+        if (data.url) {
             resultArea.innerHTML = `
                 <div class="download-grid">
                     <div class="dl-card">
-                        <p>High Quality Ready</p>
-                        <a href="${finalLink}" target="_blank" class="download-btn">DOWNLOAD NOW</a>
+                        <p>High Quality Link Found</p>
+                        <a href="${data.url}" target="_blank" class="download-btn">DOWNLOAD NOW</a>
                     </div>
                 </div>`;
         } else {
-            // Displays specific error from API if it fails
-            alert("API Note: " + (data.message || "Link could not be generated. Please check your RapidAPI dashboard."));
+            // Error handling to prevent the generic "Check Dashboard" popup
+            alert("API Error: " + (data.message || "Link not found. Ensure the video is public."));
         }
     } catch (error) {
-        alert("Connection failed. Check your API key or internet.");
+        console.error(error);
+        alert("Connection failed. Check your API subscription.");
     } finally {
         mainBtn.innerHTML = "Generate Link →";
     }
