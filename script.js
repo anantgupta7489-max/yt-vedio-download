@@ -1,5 +1,5 @@
 const API_KEY = 'd4239af42fmsha37d88047ee5b96p12d11cjsnb347fa450a93';
-const API_HOST = 'youtube-dlp-api.p.rapidapi.com';
+const API_HOST = 'yt-api.p.rapidapi.com';
 
 async function fetchDownload() {
     const videoUrl = document.getElementById('videoUrl').value;
@@ -8,12 +8,12 @@ async function fetchDownload() {
 
     if (!videoUrl) return alert("Please paste a link first.");
 
-    mainBtn.innerHTML = "YT-DLP SEARCHING...";
+    mainBtn.innerHTML = "BYPASSING RESTRICTIONS...";
     resultArea.innerHTML = "";
 
     try {
-        //
-        const response = await fetch(`https://${API_HOST}/info?url=${encodeURIComponent(videoUrl)}`, {
+        // This API provides both data and stream
+        const response = await fetch(`https://${API_HOST}/dl?id=${encodeURIComponent(videoUrl)}`, {
             method: 'GET',
             headers: {
                 'x-rapidapi-key': API_KEY,
@@ -22,28 +22,28 @@ async function fetchDownload() {
         });
 
         const data = await response.json();
-        console.log("yt-dlp Debug:", data);
+        console.log("yt-api Debug:", data);
 
-        // yt-dlp often hides the best link in the 'formats' array
-        const downloadLink = data.url || (data.formats && data.formats.find(f => f.ext === 'mp4' && f.url)?.url);
-
-        if (downloadLink) {
+        // This API returns an 'link' object with different qualities
+        if (data.status === 'OK' && data.link) {
+            // Picking the first available high-quality link
+            const firstLink = Object.values(data.link)[0][0]; 
+            
             resultArea.innerHTML = `
-                <div class="dl-container" style="margin-top: 25px; text-align: center;">
-                    <div style="background: #111; padding: 30px; border: 1px solid #333; border-radius: 20px;">
-                        <h3 style="color: #fff; margin-bottom: 15px;">Video Link Extracted</h3>
-                        <a href="${downloadLink}" target="_blank" class="download-btn" 
-                           style="background: #fff; color: #000; padding: 15px 40px; border-radius: 100px; text-decoration: none; font-weight: 900;">
+                <div class="dl-container" style="margin-top: 25px; text-align: center; animation: fadeIn 0.5s ease;">
+                    <div style="background: #111; padding: 35px; border: 1px solid #333; border-radius: 20px;">
+                        <h3 style="color: #fff; margin-bottom: 20px; font-family: sans-serif;">Video Stream Decrypted</h3>
+                        <a href="${firstLink}" target="_blank" class="download-btn" 
+                           style="background: #fff; color: #000; padding: 15px 45px; border-radius: 100px; text-decoration: none; font-weight: 900; display: inline-block;">
                            DOWNLOAD NOW
                         </a>
                     </div>
                 </div>`;
         } else {
-            //
-            alert("yt-dlp Note: This specific video has a restricted stream. Try a different video link.");
+            alert("Error: " + (data.msg || "YouTube blocked this specific stream request. Try a shorter link (without the ?si= part)."));
         }
     } catch (error) {
-        alert("API Error: Check your RapidAPI subscription for yt-dlp.");
+        alert("Connection Lost: Ensure you are subscribed to 'YT-API' on RapidAPI.");
     } finally {
         mainBtn.innerHTML = "Generate Link →";
     }
