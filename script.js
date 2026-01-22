@@ -1,5 +1,6 @@
+// Configuration from your successful test
 const API_KEY = 'd4239af42fmsha37d88047ee5b96p12d11cjsnb347fa450a93';
-const API_HOST = 'social-download-all-in-one.p.rapidapi.com';
+const API_URL = 'https://social-download-all-in-one.p.rapidapi.com/v1/social/autodownload';
 
 async function fetchDownload() {
     const videoUrl = document.getElementById('videoUrl').value;
@@ -8,39 +9,37 @@ async function fetchDownload() {
 
     if (!videoUrl) return alert("Please paste a link first.");
 
-    mainBtn.innerHTML = "FETCHING...";
+    mainBtn.innerHTML = "Working...";
     resultArea.innerHTML = "";
 
     try {
-        // The specific endpoint path from your dashboard test
-        const response = await fetch(`https://${API_HOST}/api-endpoint/social-download-all-in-one`, {
+        // This MUST be a POST request to match your '200 OK' dashboard test
+        const response = await fetch(API_URL, {
             method: 'POST',
             headers: {
-                'content-type': 'application/json',
                 'x-rapidapi-key': API_KEY,
-                'x-rapidapi-host': API_HOST
+                'x-rapidapi-host': 'social-download-all-in-one.p.rapidapi.com',
+                'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
-                url: videoUrl
-            })
+            body: JSON.stringify({ url: videoUrl })
         });
 
         const data = await response.json();
         
-        // This targets the 'url' property found in your '200 OK' JSON
+        // This targets the 'url' property exactly as shown in your test results
         if (data.url) {
             resultArea.innerHTML = `
-                <div class="download-grid">
-                    <div class="dl-card" style="background: #111; padding: 30px; border: 1px solid #333; border-radius: 20px; text-align: center;">
-                        <h2 style="margin-bottom: 20px;">Media Link Generated</h2>
-                        <a href="${data.url}" target="_blank" class="download-btn" style="background: #fff; color: #000; padding: 15px 40px; border-radius: 100px; text-decoration: none; font-weight: 900;">DOWNLOAD NOW</a>
-                    </div>
+                <div class="dl-container" style="margin-top: 25px; text-align: center;">
+                    <a href="${data.url}" target="_blank" class="download-btn" 
+                       style="background: #fff; color: #000; padding: 15px 40px; border-radius: 50px; text-decoration: none; font-weight: 900;">
+                       DOWNLOAD NOW
+                    </a>
                 </div>`;
         } else {
-            alert("API Note: " + (data.message || "Endpoint reached, but no link was returned. Check your API subscription."));
+            alert("API Note: " + (data.message || "Link not found. Ensure the video is public."));
         }
     } catch (error) {
-        alert("Connection Error. Please verify your API key is active.");
+        alert("Connection Error. Check your RapidAPI subscription.");
     } finally {
         mainBtn.innerHTML = "Generate Link →";
     }
