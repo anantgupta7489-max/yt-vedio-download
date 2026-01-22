@@ -8,17 +8,15 @@ async function fetchDownload() {
 
     if (!videoUrl) return alert("Please paste a link first.");
 
-    // Critical: Clean the URL again to remove any tracking that triggers security
-    if (videoUrl.includes('?')) {
-        videoUrl = videoUrl.split('?')[0];
-    }
+    // Critical: Removing the ?si= part which triggers signature security
+    let videoId = videoUrl.split('v=')[1] || videoUrl.split('/').pop().split('?')[0];
 
-    mainBtn.innerHTML = "BYPASSING SECURITY...";
+    mainBtn.innerHTML = "SOLVING SIGNATURE...";
     resultArea.innerHTML = "";
 
     try {
-        // We use the /dl?id= endpoint which has the highest bypass success rate
-        const response = await fetch(`https://${API_HOST}/dl?id=${encodeURIComponent(videoUrl)}`, {
+        // Using the /dl endpoint from the most recently updated API
+        const response = await fetch(`https://${API_HOST}/dl?id=${videoId}`, {
             method: 'GET',
             headers: {
                 'x-rapidapi-key': API_KEY,
@@ -27,28 +25,27 @@ async function fetchDownload() {
         });
 
         const data = await response.json();
-        
-        // This specific API returns formats in a quality-ranked order
-        if (data.status === 'OK' && data.link) {
-            // Get the best available link from the response object
-            const downloadUrl = data.link["22"] || data.link["18"] || Object.values(data.link)[0][0];
+        console.log("Bypass Attempt:", data);
 
+        // This API returns a 'link' object with quality keys
+        if (data.status === 'OK' && data.link) {
+            const finalLink = data.link["22"] || data.link["18"] || Object.values(data.link)[0][0];
+            
             resultArea.innerHTML = `
-                <div class="dl-success" style="margin-top:20px; text-align:center;">
-                    <div style="background:#0a0a0a; padding:30px; border:2px solid #222; border-radius:15px;">
-                        <p style="color:#0f0; margin-bottom:15px; font-weight:bold;">BYPASS SUCCESSFUL</p>
-                        <a href="${downloadUrl}" target="_blank" class="download-btn" 
-                           style="background:#fff; color:#000; padding:15px 40px; border-radius:50px; text-decoration:none; font-weight:900; display:inline-block;">
-                           DOWNLOAD VIDEO
+                <div class="dl-card" style="margin-top:20px; text-align:center;">
+                    <div style="background:#111; padding:25px; border-radius:15px; border:1px solid #00ff00;">
+                        <p style="color:#00ff00; margin-bottom:10px;">SIGNATURE SOLVED</p>
+                        <a href="${finalLink}" target="_blank" class="download-btn" 
+                           style="background:#fff; color:#000; padding:12px 35px; border-radius:50px; text-decoration:none; font-weight:bold; display:inline-block;">
+                           DOWNLOAD MP4
                         </a>
                     </div>
                 </div>`;
         } else {
-            // If the specific endpoint fails, try the general /info fallback
-            alert("Bypass Failed: YouTube's signature is too strong for this URL. Try a different video link.");
+            alert("Bypass Error: YouTube's latest patch is blocking this API. Try another video or check your API limit.");
         }
     } catch (error) {
-        alert("System Busy: Please try again in 5 seconds.");
+        alert("Server connection failed. Refresh the page.");
     } finally {
         mainBtn.innerHTML = "Generate Link →";
     }
