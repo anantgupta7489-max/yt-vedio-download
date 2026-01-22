@@ -3,30 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video & Audio Downloader</title>
+    <title>Pro Video Downloader</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <div class="badge"><span class="dot"></span> Fast & Reliable Downloader</div>
-        <h1>Download Videos & Audio</h1>
-        <h1 class="highlight">In Any Quality</h1>
-        <p class="description">Paste any video link and download it in your preferred format. Supports YouTube, Instagram, TikTok, and more.</p>
-
-        <div class="input-wrapper">
-            <input type="text" id="videoUrl" placeholder="Paste video URL">
-            <button class="paste-btn" onclick="pasteLink()">Paste</button>
-        </div>
-
-        <button class="submit-btn" id="mainBtn" onclick="fetchDownload()">Get Video Info →</button>
-
-        <div id="resultArea"></div>
-
-        <div class="features-grid">
-            <div class="card"><h3>Multiple Formats</h3><p>Download as MP4 or MP3</p></div>
-            <div class="card"><h3>High Quality</h3><p>Up to 4K resolution</p></div>
+    <div class="sticker-container">
+        <div class="rotating-sticker">
+            FREE DOWNLOAD • FREE DOWNLOAD • FREE DOWNLOAD • FREE DOWNLOAD •
         </div>
     </div>
+
+    <div class="main-card">
+        <h1>Ready to make some noise?</h1>
+        <p>Paste any YouTube link and download instantly in High Quality</p>
+        
+        <div class="input-group">
+            <input type="text" id="videoUrl" placeholder="Paste YouTube Link Here...">
+            <button id="mainBtn" onclick="fetchDownload()">Generate Link →</button>
+        </div>
+
+        <div id="resultArea"></div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>
