@@ -10,13 +10,13 @@ async function fetchDownload() {
                     videoUrl.split('youtu.be/')[1].split('?')[0] : 
                     videoUrl.split('v=')[1]?.split('&')[0];
     
-    if (!videoId) return alert("Please enter a valid YouTube link!");
+    if (!videoId) return alert("Please enter a valid link.");
 
-    mainBtn.innerText = "Generating...";
+    mainBtn.innerText = "PREPARING...";
     resultArea.innerHTML = "";
 
     try {
-        // Calling the specific Download endpoint with mandatory geo parameter
+        // Requesting download links via the verified endpoint
         const response = await fetch(`https://${API_HOST}/dl?id=${videoId}&cgeo=US`, {
             method: 'GET',
             headers: { 'x-rapidapi-key': API_KEY, 'x-rapidapi-host': API_HOST }
@@ -26,19 +26,24 @@ async function fetchDownload() {
 
         if (data.status === 'OK' && data.link) {
             resultArea.innerHTML = `
-                <div class="download-result">
-                    <h3 style="margin-bottom:15px; color:#fff;">${data.title}</h3>
-                    <a href="${data.link}" target="_blank" 
-                       style="display:inline-block; background:#fff; color:#000; padding:12px 30px; text-decoration:none; border-radius:50px; font-weight:900; font-size:14px;">
-                       DOWNLOAD 4K MP4 / MP3
-                    </a>
+                <div class="dl-grid">
+                    <div class="dl-card">
+                        <h2>4K MP4</h2>
+                        <p>High Resolution Video</p>
+                        <a href="${data.link}" target="_blank" class="dl-btn" style="color:black; background:white; padding:12px 25px; border-radius:50px; font-weight:900; text-decoration:none;">GET VIDEO</a>
+                    </div>
+                    <div class="dl-card">
+                        <h2>HQ MP3</h2>
+                        <p>Crystal Clear Audio</p>
+                        <a href="${data.link}" target="_blank" class="dl-btn" style="color:black; background:white; padding:12px 25px; border-radius:50px; font-weight:900; text-decoration:none;">GET AUDIO</a>
+                    </div>
                 </div>`;
         } else {
-            // Captures "Manual Test" or "Subscription" errors
-            alert(data.msg || "API Error: Please verify dashboard activation.");
+            // Error handling for subscription or activation notes
+            alert(data.msg || "API initialization required on dashboard.");
         }
     } catch (error) {
-        alert("Check your connection.");
+        alert("Connection lost. Please try again.");
     } finally {
         mainBtn.innerText = "Generate Link →";
     }
