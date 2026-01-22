@@ -8,21 +8,23 @@ async function fetchDownload() {
 
     if (!videoUrl) return alert("Please paste a link first.");
 
-    // Step 1: Extract only the ID to avoid tracking parameters that trigger security
+    // Critical: Strip tracking code like ?si= that triggers YouTube's high security
     let videoId = "";
-    if (videoUrl.includes('youtu.be/')) {
-        videoId = videoUrl.split('youtu.be/')[1].split('?')[0];
-    } else if (videoUrl.includes('v=')) {
-        videoId = videoUrl.split('v=')[1].split('&')[0];
-    } else {
-        videoId = videoUrl.split('/').pop().split('?')[0];
+    try {
+        if (videoUrl.includes('youtu.be/')) {
+            videoId = videoUrl.split('youtu.be/')[1].split('?')[0];
+        } else {
+            videoId = videoUrl.split('v=')[1].split('&')[0];
+        }
+    } catch(e) {
+        return alert("Please use a standard YouTube link.");
     }
 
-    mainBtn.innerHTML = "UNLOCKING STREAM...";
+    mainBtn.innerHTML = "PATCHING SECURITY...";
     resultArea.innerHTML = "";
 
     try {
-        // Step 2: Use the /dl endpoint which is designed for high-security bypass
+        // Using the specialized /dl endpoint for high-security bypass
         const response = await fetch(`https://${API_HOST}/dl?id=${videoId}`, {
             method: 'GET',
             headers: {
@@ -33,26 +35,27 @@ async function fetchDownload() {
 
         const data = await response.json();
         
-        // Step 3: Parse the format-specific links
+        // Success check for the Poix API response format
         if (data.status === 'OK' && data.link) {
-            // Priority: 720p (22), then 360p (18), then any available
-            const finalDownloadLink = data.link["22"] || data.link["18"] || Object.values(data.link)[0][0];
+            // Pick the best available stream (720p priority)
+            const downloadUrl = data.link["22"] || data.link["18"] || Object.values(data.link)[0][0];
 
             resultArea.innerHTML = `
-                <div class="dl-container" style="margin-top:20px; text-align:center;">
-                    <div style="background:#000; padding:25px; border:1px solid #333; border-radius:15px;">
-                        <p style="color:#0f0; margin-bottom:15px; font-weight:bold;">SECURITY BYPASSED</p>
-                        <a href="${finalDownloadLink}" target="_blank" class="download-btn" 
-                           style="background:#fff; color:#000; padding:12px 35px; border-radius:50px; text-decoration:none; font-weight:900; display:inline-block;">
-                           DOWNLOAD NOW
+                <div class="dl-card" style="margin-top:20px; text-align:center;">
+                    <div style="background:#0a0a0a; padding:30px; border:2px solid #222; border-radius:20px;">
+                        <p style="color:#0f0; margin-bottom:15px; font-weight:bold;">PATCH BYPASSED</p>
+                        <a href="${downloadUrl}" target="_blank" class="download-btn" 
+                           style="background:#fff; color:#000; padding:15px 45px; border-radius:100px; text-decoration:none; font-weight:900; display:inline-block;">
+                           DOWNLOAD VIDEO
                         </a>
                     </div>
                 </div>`;
         } else {
-            alert("Bypass Error: " + (data.msg || "YouTube's latest security patch is blocking this video."));
+            //
+            alert("This specific video is locked. Try a shorter link or a different video.");
         }
     } catch (error) {
-        alert("Connection Error: Please check your internet or API subscription.");
+        alert("API Limit Reached or Network Error. Check RapidAPI Dashboard.");
     } finally {
         mainBtn.innerHTML = "Generate Link →";
     }
