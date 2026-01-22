@@ -6,18 +6,18 @@ async function fetchDownload() {
     const resultArea = document.getElementById('resultArea');
     const mainBtn = document.getElementById('mainBtn');
 
-    // Extracting ID from your YouTube link
+    // Extract the Video ID correctly from the URL
     const videoId = videoUrl.includes('youtu.be/') ? 
                     videoUrl.split('youtu.be/')[1].split('?')[0] : 
                     videoUrl.split('v=')[1]?.split('&')[0];
     
     if (!videoId) return alert("Please paste a valid YouTube link.");
 
-    mainBtn.innerText = "Connecting...";
+    mainBtn.innerText = "Generating Link...";
     resultArea.innerHTML = "Working...";
 
     try {
-        // We must use 'dl' and include 'cgeo' to get the download link
+        // We use the '/dl' endpoint with the 'cgeo' parameter you tested
         const response = await fetch(`https://${API_HOST}/dl?id=${videoId}&cgeo=US`, {
             method: 'GET',
             headers: {
@@ -30,20 +30,19 @@ async function fetchDownload() {
 
         if (data.status === 'OK' && data.link) {
             resultArea.innerHTML = `
-                <div style="background:#161625; padding:20px; border-radius:15px; border:2px solid #6366f1; margin-top:20px;">
-                    <h4 style="color:white;">${data.title}</h4>
-                    <a href="${data.link}" target="_blank" style="display:block; text-align:center; background:#6366f1; color:white; padding:12px; text-decoration:none; border-radius:10px; font-weight:bold; margin-top:10px;">
-                        Download Now
+                <div class="download-card" style="background:#161625; padding:20px; border-radius:15px; border:2px solid #6366f1; margin-top:20px; text-align:left;">
+                    <h4 style="color:white; margin-bottom:10px;">${data.title}</h4>
+                    <a href="${data.link}" target="_blank" class="dl-btn" style="display:block; text-align:center; background:#6366f1; color:white; padding:12px; text-decoration:none; border-radius:10px; font-weight:bold;">
+                        Download MP4 Now
                     </a>
                 </div>`;
         } else {
-            // This message tells you exactly what to do next
-            alert("API Note: " + (data.msg || "The API key needs a manual test on the dashboard to activate."));
+            // This captures the exact message if the manual test isn't done yet
+            alert("API Note: " + (data.msg || "Please perform the manual test on the RapidAPI dashboard."));
         }
     } catch (error) {
-        alert("Check your internet connection.");
+        alert("Connection Error. Please ensure your API key is active.");
     } finally {
         mainBtn.innerText = "Get Download Links →";
     }
 }
-
