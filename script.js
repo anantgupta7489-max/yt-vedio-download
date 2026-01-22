@@ -1,49 +1,47 @@
-const API_KEY = 'd4239af42fmsha37d88047ee5b96p12d11cjsnb347fa450a93';
-const API_HOST = 'yt-api.p.rapidapi.com';
+const API_KEY = 'YOUR_ACTUAL_RAPIDAPI_KEY_HERE';
+const API_HOST = 'social-download-all-in-one.p.rapidapi.com';
 
 async function fetchDownload() {
     const videoUrl = document.getElementById('videoUrl').value;
     const resultArea = document.getElementById('resultArea');
     const mainBtn = document.getElementById('mainBtn');
 
-    const videoId = videoUrl.includes('youtu.be/') ? 
-                    videoUrl.split('youtu.be/')[1].split('?')[0] : 
-                    videoUrl.split('v=')[1]?.split('&')[0];
-    
-    if (!videoId) return alert("Please enter a valid link.");
+    if (!videoUrl) return alert("Please paste a link first.");
 
-    mainBtn.innerHTML = "Working...";
+    mainBtn.innerHTML = "WORKING...";
     resultArea.innerHTML = "";
 
     try {
-        //
-        const response = await fetch(`https://${API_HOST}/dl?id=${videoId}&cgeo=US`, {
+        // Using the Social Download All In One endpoint
+        const response = await fetch(`https://${API_HOST}/v1/social/autodownload?url=${encodeURIComponent(videoUrl)}`, {
             method: 'GET',
-            headers: { 'x-rapidapi-key': API_KEY, 'x-rapidapi-host': API_HOST }
+            headers: {
+                'x-rapidapi-key': API_KEY,
+                'x-rapidapi-host': API_HOST
+            }
         });
 
         const data = await response.json();
+        console.log("API Debug:", data);
 
-        if (data.status === 'OK' && data.link) {
+        // Smart Link Finder: Checks all possible data paths
+        const finalLink = data.url || (data.medias && data.medias[0].url);
+
+        if (finalLink) {
             resultArea.innerHTML = `
                 <div class="download-grid">
                     <div class="dl-card">
-                        <h2>Video</h2>
-                        <p>MP4 Ultra HD</p>
-                        <a href="${data.link}" target="_blank" style="background:#fff; color:#000; padding:10px 25px; border-radius:50px; text-decoration:none; font-weight:bold;">DOWNLOAD</a>
-                    </div>
-                    <div class="dl-card">
-                        <h2>Audio</h2>
-                        <p>MP3 High Quality</p>
-                        <a href="${data.link}" target="_blank" style="background:#fff; color:#000; padding:10px 25px; border-radius:50px; text-decoration:none; font-weight:bold;">DOWNLOAD</a>
+                        <p>High Quality Ready</p>
+                        <a href="${finalLink}" target="_blank" class="download-btn">DOWNLOAD NOW</a>
                     </div>
                 </div>`;
         } else {
-            alert(data.msg || "API Error: Check Dashboard.");
+            // Displays specific error from API if it fails
+            alert("API Note: " + (data.message || "Link could not be generated. Please check your RapidAPI dashboard."));
         }
     } catch (error) {
-        alert("Connection failed.");
+        alert("Connection failed. Check your API key or internet.");
     } finally {
-        mainBtn.innerHTML = 'Generate Link <span class="arrow">→</span>';
+        mainBtn.innerHTML = "Generate Link →";
     }
 }
