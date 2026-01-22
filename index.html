@@ -5,33 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pro Media Downloader</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;900&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="sticker-3d">
+    <div class="badge-3d">
         <svg viewBox="0 0 100 100">
             <path id="circlePath" d="M 50, 50 m -37, 0 a 37,37 0 1,1 74,0 a 37,37 0 1,1 -74,0" fill="transparent" />
-            <text font-family="'Inter', sans-serif" font-size="11" font-weight="900" fill="#fff">
+            <text font-size="10" font-weight="900" fill="white">
                 <textPath xlink:href="#circlePath">
-                    DOWNLOAD 4K • PREMIUM AUDIO • FAST & RELIABLE • UNLIMITED •
+                    4K DOWNLOAD • PREMIUM AUDIO • FAST ACCESS • 4K DOWNLOAD •
                 </textPath>
             </text>
         </svg>
     </div>
 
-    <div class="content">
-        <h1 class="headline">Ready to make some noise?</h1>
-        <p class="description">Paste your link and get your media instantly.</p>
+    <div class="main-content">
+        <h1 class="headline">Ready to make<br>some noise?</h1>
+        <p class="tagline">Paste your link and get your media instantly.</p>
         
-        <div class="input-container">
+        <div class="pill-input-box">
             <input type="text" id="videoUrl" placeholder="Paste YouTube Link Here...">
             <button id="mainBtn" onclick="fetchDownload()">Generate Link <span class="arrow">→</span></button>
         </div>
 
-        <div class="features">
-            <span class="feature-tag">Download in 4K MP4</span>
-            <span class="feature-tag">Convert to HQ MP3</span>
-            <span class="feature-tag">Instant Access</span>
+        <div class="info-chips">
+            <span>✓ 4K MP4</span>
+            <span>✓ 320kbps MP3</span>
+            <span>✓ Instant</span>
         </div>
 
         <div id="resultArea"></div>
