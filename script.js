@@ -10,42 +10,36 @@ async function fetchDownload() {
                     videoUrl.split('youtu.be/')[1].split('?')[0] : 
                     videoUrl.split('v=')[1]?.split('&')[0];
     
-    if (!videoId) return alert("Please paste a valid YouTube link.");
+    if (!videoId) return alert("Please enter a valid link!");
 
-    // Animation: Change button state
-    mainBtn.innerText = "🚀 Generating Link...";
-    mainBtn.style.transform = "scale(0.95)";
+    mainBtn.innerText = "Processing...";
     resultArea.innerHTML = "";
 
     try {
-        // Calling the correct Download endpoint verified in your screenshot
+        // Correct endpoint /dl with mandatory cgeo=US
         const response = await fetch(`https://${API_HOST}/dl?id=${videoId}&cgeo=US`, {
             method: 'GET',
-            headers: {
-                'x-rapidapi-key': API_KEY,
-                'x-rapidapi-host': API_HOST
-            }
+            headers: { 'x-rapidapi-key': API_KEY, 'x-rapidapi-host': API_HOST }
         });
 
         const data = await response.json();
 
         if (data.status === 'OK' && data.link) {
             resultArea.innerHTML = `
-                <div class="download-card">
-                    <h4>${data.title}</h4>
-                    <p>Format: MP4 (High Quality)</p>
-                    <a href="${data.link}" target="_blank" class="glow-button">
-                        DOWNLOAD NOW
+                <div class="download-result">
+                    <p style="margin-bottom:10px;">Ready: ${data.title}</p>
+                    <a href="${data.link}" target="_blank" 
+                       style="display:inline-block; background:#fff; color:#000; padding:10px 20px; text-decoration:none; border-radius:50px; font-weight:bold;">
+                       CLICK TO DOWNLOAD
                     </a>
                 </div>`;
         } else {
-            // Displays specific error messages from the API
-            alert("API Note: " + (data.msg || "Check your RapidAPI subscription."));
+            // Displays specific error if manual activation is still needed
+            alert(data.msg || "Check API Subscription");
         }
     } catch (error) {
-        alert("Connection Error. Please check your internet.");
+        alert("Connection Error");
     } finally {
-        mainBtn.innerText = "Get Download Links →";
-        mainBtn.style.transform = "scale(1)";
+        mainBtn.innerText = "Generate Link →";
     }
 }
