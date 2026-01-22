@@ -1,6 +1,6 @@
-// Configuration from your successful test
-const API_KEY = 'd4239af42fmsha37d88047ee5b96p12d11cjsnb347fa450a93';
-const API_URL = 'https://social-download-all-in-one.p.rapidapi.com/v1/social/autodownload';
+// New API Configuration
+const API_KEY = 'YOUR_RAPIDAPI_KEY_HERE';
+const API_HOST = 'download-all-in-one1.p.rapidapi.com';
 
 async function fetchDownload() {
     const videoUrl = document.getElementById('videoUrl').value;
@@ -9,37 +9,42 @@ async function fetchDownload() {
 
     if (!videoUrl) return alert("Please paste a link first.");
 
-    mainBtn.innerHTML = "Working...";
+    mainBtn.innerHTML = "FETCHING...";
     resultArea.innerHTML = "";
 
     try {
-        // This MUST be a POST request to match your '200 OK' dashboard test
-        const response = await fetch(API_URL, {
+        const response = await fetch(`https://${API_HOST}/api/allinone`, {
             method: 'POST',
             headers: {
                 'x-rapidapi-key': API_KEY,
-                'x-rapidapi-host': 'social-download-all-in-one.p.rapidapi.com',
+                'x-rapidapi-host': API_HOST,
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ url: videoUrl })
+            body: JSON.stringify({
+                url: videoUrl
+            })
         });
 
         const data = await response.json();
-        
-        // This targets the 'url' property exactly as shown in your test results
-        if (data.url) {
+        console.log("New API Data:", data);
+
+        // This API returns a 'video' field directly
+        if (data.status && data.video) {
             resultArea.innerHTML = `
-                <div class="dl-container" style="margin-top: 25px; text-align: center;">
-                    <a href="${data.url}" target="_blank" class="download-btn" 
-                       style="background: #fff; color: #000; padding: 15px 40px; border-radius: 50px; text-decoration: none; font-weight: 900;">
-                       DOWNLOAD NOW
-                    </a>
+                <div class="download-result" style="margin-top:20px; text-align:center;">
+                    <div style="background:#111; padding:20px; border-radius:15px; border:1px solid #333;">
+                        <h3 style="color:#fff; margin-bottom:15px;">Video Found!</h3>
+                        <a href="${data.video}" target="_blank" class="download-btn" 
+                           style="background:#fff; color:#000; padding:12px 30px; border-radius:50px; text-decoration:none; font-weight:bold; display:inline-block;">
+                           DOWNLOAD MP4
+                        </a>
+                    </div>
                 </div>`;
         } else {
-            alert("API Note: " + (data.message || "Link not found. Ensure the video is public."));
+            alert("Error: " + (data.message || "Could not retrieve video."));
         }
     } catch (error) {
-        alert("Connection Error. Check your RapidAPI subscription.");
+        alert("Connection failed. Please ensure you are subscribed to 'Download All In One!' on RapidAPI.");
     } finally {
         mainBtn.innerHTML = "Generate Link →";
     }
