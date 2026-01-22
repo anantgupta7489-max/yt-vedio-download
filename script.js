@@ -8,14 +8,23 @@ async function fetchDownload() {
 
     if (!videoUrl) return alert("Please paste a link first.");
 
-    // Critical: Removing the ?si= part which triggers signature security
-    let videoId = videoUrl.split('v=')[1] || videoUrl.split('/').pop().split('?')[0];
+    // Step 1: Force clean the ID to remove any 'patch' triggers
+    let videoId = "";
+    try {
+        if (videoUrl.includes('youtu.be/')) {
+            videoId = videoUrl.split('youtu.be/')[1].split('?')[0];
+        } else {
+            videoId = videoUrl.split('v=')[1].split('&')[0];
+        }
+    } catch(e) {
+        return alert("Please use a standard YouTube link.");
+    }
 
-    mainBtn.innerHTML = "SOLVING SIGNATURE...";
+    mainBtn.innerHTML = "PATCHING SIGNATURE...";
     resultArea.innerHTML = "";
 
     try {
-        // Using the /dl endpoint from the most recently updated API
+        // Step 2: Request from the specialized download endpoint
         const response = await fetch(`https://${API_HOST}/dl?id=${videoId}`, {
             method: 'GET',
             headers: {
@@ -25,27 +34,28 @@ async function fetchDownload() {
         });
 
         const data = await response.json();
-        console.log("Bypass Attempt:", data);
-
-        // This API returns a 'link' object with quality keys
+        
+        // Step 3: Check for the success status returned by Poix's API
         if (data.status === 'OK' && data.link) {
-            const finalLink = data.link["22"] || data.link["18"] || Object.values(data.link)[0][0];
-            
+            // Find the 720p (22) or 360p (18) direct streams
+            const downloadUrl = data.link["22"] || data.link["18"] || Object.values(data.link)[0][0];
+
             resultArea.innerHTML = `
                 <div class="dl-card" style="margin-top:20px; text-align:center;">
-                    <div style="background:#111; padding:25px; border-radius:15px; border:1px solid #00ff00;">
-                        <p style="color:#00ff00; margin-bottom:10px;">SIGNATURE SOLVED</p>
-                        <a href="${finalLink}" target="_blank" class="download-btn" 
-                           style="background:#fff; color:#000; padding:12px 35px; border-radius:50px; text-decoration:none; font-weight:bold; display:inline-block;">
-                           DOWNLOAD MP4
+                    <div style="background:#050505; padding:25px; border-radius:15px; border:2px solid #333;">
+                        <p style="color:#fff; margin-bottom:15px; font-weight:bold;">BYPASS SUCCESSFUL</p>
+                        <a href="${downloadUrl}" target="_blank" class="download-btn" 
+                           style="background:#fff; color:#000; padding:15px 40px; border-radius:100px; text-decoration:none; font-weight:900; display:inline-block;">
+                           DOWNLOAD VIDEO
                         </a>
                     </div>
                 </div>`;
         } else {
-            alert("Bypass Error: YouTube's latest patch is blocking this API. Try another video or check your API limit.");
+            //
+            alert("This video is locked by YouTube's high security. Try another video link.");
         }
     } catch (error) {
-        alert("Server connection failed. Refresh the page.");
+        alert("API Limit Reached or Network Error.");
     } finally {
         mainBtn.innerHTML = "Generate Link →";
     }
