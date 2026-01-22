@@ -12,11 +12,11 @@ async function fetchDownload() {
     
     if (!videoId) return alert("Please enter a valid link.");
 
-    mainBtn.innerText = "PREPARING...";
+    mainBtn.innerHTML = "Working...";
     resultArea.innerHTML = "";
 
     try {
-        // Requesting download links via the verified endpoint
+        //
         const response = await fetch(`https://${API_HOST}/dl?id=${videoId}&cgeo=US`, {
             method: 'GET',
             headers: { 'x-rapidapi-key': API_KEY, 'x-rapidapi-host': API_HOST }
@@ -26,25 +26,24 @@ async function fetchDownload() {
 
         if (data.status === 'OK' && data.link) {
             resultArea.innerHTML = `
-                <div class="dl-grid">
+                <div class="download-grid">
                     <div class="dl-card">
-                        <h2>4K MP4</h2>
-                        <p>High Resolution Video</p>
-                        <a href="${data.link}" target="_blank" class="dl-btn" style="color:black; background:white; padding:12px 25px; border-radius:50px; font-weight:900; text-decoration:none;">GET VIDEO</a>
+                        <h2>Video</h2>
+                        <p>MP4 Ultra HD</p>
+                        <a href="${data.link}" target="_blank" style="background:#fff; color:#000; padding:10px 25px; border-radius:50px; text-decoration:none; font-weight:bold;">DOWNLOAD</a>
                     </div>
                     <div class="dl-card">
-                        <h2>HQ MP3</h2>
-                        <p>Crystal Clear Audio</p>
-                        <a href="${data.link}" target="_blank" class="dl-btn" style="color:black; background:white; padding:12px 25px; border-radius:50px; font-weight:900; text-decoration:none;">GET AUDIO</a>
+                        <h2>Audio</h2>
+                        <p>MP3 High Quality</p>
+                        <a href="${data.link}" target="_blank" style="background:#fff; color:#000; padding:10px 25px; border-radius:50px; text-decoration:none; font-weight:bold;">DOWNLOAD</a>
                     </div>
                 </div>`;
         } else {
-            // Error handling for subscription or activation notes
-            alert(data.msg || "API initialization required on dashboard.");
+            alert(data.msg || "API Error: Check Dashboard.");
         }
     } catch (error) {
-        alert("Connection lost. Please try again.");
+        alert("Connection failed.");
     } finally {
-        mainBtn.innerText = "Generate Link →";
+        mainBtn.innerHTML = 'Generate Link <span class="arrow">→</span>';
     }
 }
