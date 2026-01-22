@@ -8,12 +8,12 @@ async function fetchDownload() {
 
     if (!videoUrl) return alert("Please paste a link first.");
 
-    mainBtn.innerHTML = "Working...";
+    mainBtn.innerHTML = "FETCHING...";
     resultArea.innerHTML = "";
 
     try {
-        // Updated to the base URL shown in your successful '200 OK' test
-        const response = await fetch(`https://${API_HOST}/`, {
+        // The specific endpoint path from your dashboard test
+        const response = await fetch(`https://${API_HOST}/api-endpoint/social-download-all-in-one`, {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',
@@ -26,22 +26,21 @@ async function fetchDownload() {
         });
 
         const data = await response.json();
-        console.log("Response Data:", data);
-
-        // Accessing 'url' directly as seen in your JSON test results
+        
+        // This targets the 'url' property found in your '200 OK' JSON
         if (data.url) {
             resultArea.innerHTML = `
-                <div class="download-grid" style="margin-top: 20px;">
-                    <div class="dl-card" style="background: #111; padding: 20px; border-radius: 15px; border: 1px solid #333;">
-                        <h2 style="font-size: 1.5rem; margin-bottom: 15px;">Media Found</h2>
-                        <a href="${data.url}" target="_blank" class="download-btn" style="background: #fff; color: #000; padding: 10px 25px; border-radius: 50px; text-decoration: none; font-weight: bold;">DOWNLOAD NOW</a>
+                <div class="download-grid">
+                    <div class="dl-card" style="background: #111; padding: 30px; border: 1px solid #333; border-radius: 20px; text-align: center;">
+                        <h2 style="margin-bottom: 20px;">Media Link Generated</h2>
+                        <a href="${data.url}" target="_blank" class="download-btn" style="background: #fff; color: #000; padding: 15px 40px; border-radius: 100px; text-decoration: none; font-weight: 900;">DOWNLOAD NOW</a>
                     </div>
                 </div>`;
         } else {
-            alert("API Note: " + (data.message || "Link not found. Please check your RapidAPI dashboard limits."));
+            alert("API Note: " + (data.message || "Endpoint reached, but no link was returned. Check your API subscription."));
         }
     } catch (error) {
-        alert("Connection Error. Make sure you are subscribed to this API on RapidAPI.");
+        alert("Connection Error. Please verify your API key is active.");
     } finally {
         mainBtn.innerHTML = "Generate Link →";
     }
